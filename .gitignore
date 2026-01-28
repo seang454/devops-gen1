@@ -1,0 +1,4 @@
+# Cloud credentials
+**/serviceaccount.json
+**/credentials/
+*.json
