@@ -1,0 +1,25 @@
+---
+# add_host_to_inventory.yaml
+# Task file to append a single GCP host to inventory.ini
+
+- name: Read gcp_instance.json
+  ansible.builtin.slurp:
+    src: "{{ json_file }}"
+  register: json_content
+
+- name: Convert JSON string to dict
+  ansible.builtin.set_fact:
+    gcp_data: "{{ json_content.content | b64decode | from_json }}"
+
+- name: Append GCP host to inventory.ini
+  ansible.builtin.blockinfile:
+    path: "{{ inventory_file }}"
+    create: yes
+    state: present
+    block: |
+      [gcp_hosts]
+      {{ gcp_data.name }} ansible_host={{ gcp_data.networkInterfaces[0].accessConfigs[0].natIP }}
+
+      [gcp_hosts:vars]
+      ansible_user={{ ssh_user }}
+      ansible_ssh_private_key_file={{ private_key_path }}

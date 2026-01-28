@@ -1,0 +1,1 @@
+{"changed": true, "failed": false, "deprecations": [{"msg": "Importing 'to_text' from 'ansible.module_utils._text' is deprecated.", "collection_name": "ansible.builtin", "version": "2.24", "deprecator": {"resolved_name": "ansible.builtin", "type": null}}]}

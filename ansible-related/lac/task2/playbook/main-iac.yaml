@@ -1,0 +1,9 @@
+- name: running create workers and master instances task
+  hosts: node1
+  become: true
+  vars_files:
+    - ../vars/machine.yaml
+  tasks:
+    - import_tasks: ./tasks/delegate-file.yaml
+    - import_tasks: ./tasks/create-masters-task.yaml
+    - import_tasks: ./tasks/create-workers-task.yaml

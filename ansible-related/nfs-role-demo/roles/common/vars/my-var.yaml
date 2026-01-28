@@ -1,0 +1,3 @@
+DOCKER_VERSION: latest 
+POSTGRES_IMAGE: postgres:latest 
+POSTGRES_USER: postgres-demo-admin 

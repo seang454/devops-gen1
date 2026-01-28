@@ -1,0 +1,100 @@
+- name: Create a Single GCP instance 
+  hosts: localhost 
+  become: true 
+  vars: 
+    ssh_public_path: "/home/seang/.ssh/id_rsa.pub"
+    machine_name: "first-demo1"
+    google_project_id: "temporal-bebop-483101-j1"
+    # service_account_path: "../credentials/serviceaccount.json"
+    adc_file: "/home/seang/.config/gcloud/application_default_credentials.json"
+    venv_path: /opt/gcp-venv
+   # ansible_python_interpreter: "{{ venv_path }}/bin/python" is used after venv is created
+  tasks: 
+    - name: Update apt cache 
+      apt: 
+        update_cache: yes  
+    - name: Slurping the public key and store in variables 
+      slurp: 
+        src : "{{ssh_public_path}}"
+      register: ssh_pub_key
+
+    - name: Install system packages for Python venv
+      apt:
+        name:
+          - python3-venv
+          - python3-pip
+        state: present
+
+    - name: Create Python virtual environment
+      command: python3 -m venv {{ venv_path }}
+      args:
+        creates: "{{ venv_path }}"
+
+    - name: Upgrade pip in virtual environment
+      pip:
+        name: pip
+        state: latest
+        virtualenv: "{{ venv_path }}"
+                
+    - name: Use pip to install request and google-auth in virtual environment
+      pip: 
+        name: 
+          - requests 
+          - google-auth
+          - google-api-python-client
+        virtualenv: "{{ venv_path }}"
+
+    - name: Create GCP instance
+      google.cloud.gcp_compute_instance:
+        name: "{{machine_name}}"
+        machine_type: "e2-medium"
+        zone: "us-central1-a"
+        project: "{{google_project_id}}"
+        auth_kind: application
+        # auth_kind: "serviceaccount"
+        # service_account_file: "{{ service_account_path }}"
+        state: present
+        metadata:
+          ssh-keys: "pengseang:{{ ssh_pub_key['content'] | b64decode }}"
+          startup-script: |
+            #!/bin/bash 
+            sudo apt-get install fish -y
+        disks:
+          - auto_delete: true
+            boot: true
+            initialize_params:
+              source_image: "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
+              disk_size_gb: 15
+              disk_type: "pd-standard"
+        network_interfaces:
+          - network:
+              selfLink: "projects/{{google_project_id}}/global/networks/default"
+            access_configs:
+              - name: External NAT
+                type: ONE_TO_ONE_NAT
+        tags:
+          items:
+            - http-server
+            - https-server
+      register: gcp_instance
+      when: true # this line is used to control whether to run this task or not (true is to run, false is to skip)
+      environment: 
+        GOOGLE_APPLICATION_CREDENTIALS: "{{ adc_file }}"
+        GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES: "1"
+      # vars is used to specify ansible_python_interpreter to Ensures the GCP module runs with the Python in your virtual environment.
+      vars:
+        ansible_python_interpreter: "{{ venv_path }}/bin/python"
+    - name: Write gcp_instance into json file
+      copy:
+        content: "{{ gcp_instance }}"
+        dest: "./gcp_instance.json"
+      when: true
+    - name: write created machine to inventory file
+      include_tasks: ./tasks/add_host_to_inventory.yaml
+      vars:
+        ssh_user: "pengseang"
+        json_file: "./gcp_instance.json"
+        inventory_file: "../inventory.ini"
+        private_key_path: "/home/seang/.ssh/id_rsa"
+
+      

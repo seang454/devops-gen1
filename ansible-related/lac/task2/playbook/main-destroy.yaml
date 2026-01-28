@@ -1,0 +1,7 @@
+- name: delete machine gcp_instances
+  hosts: node1
+  become: true
+  vars_files:
+    - ../vars/machine.yaml
+  tasks:
+    - import_tasks: ./tasks/destroy-machine-tasks.yaml

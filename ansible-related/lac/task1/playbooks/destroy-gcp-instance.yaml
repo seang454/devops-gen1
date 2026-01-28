@@ -1,0 +1,54 @@
+- name: Remove a Single GCP instance 
+  hosts: localhost 
+  become: true 
+  vars: 
+    ssh_public_path: "/home/kk/.ssh/id_rsa.pub"
+    machine_name: "first-demo1"
+    google_project_id: "temporal-bebop-483101-j1"
+    # service_account_path: "../credentials/serviceaccount.json"
+    adc_file: "/home/seang/.config/gcloud/application_default_credentials.json"
+    venv_path: /opt/gcp-venv
+    ansible_python_interpreter: "{{ venv_path }}/bin/python" # is used after venv is created
+  tasks: 
+    - name: Remove GCP instance
+      google.cloud.gcp_compute_instance:
+        name: "{{machine_name}}"
+        machine_type: "e2-medium"
+        zone: "us-central1-a"
+        project: "{{google_project_id}}"
+        auth_kind: application
+        # auth_kind: "serviceaccount"
+        # service_account_file: "{{ service_account_path }}"
+        state: absent
+        disks:
+          - auto_delete: true
+            boot: true
+            initialize_params:
+              source_image: "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
+              disk_size_gb: 15
+              disk_type: "pd-standard"
+        network_interfaces:
+          - network:
+              selfLink: "projects/{{google_project_id}}/global/networks/default"
+            access_configs:
+              - name: External NAT
+                type: ONE_TO_ONE_NAT
+        tags:
+          items:
+            - http-server
+            - https-server
+      register: gcp_instance
+      when: true 
+      environment: 
+        GOOGLE_APPLICATION_CREDENTIALS: "{{ adc_file }}"
+        GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES: "1"
+    - name: Write gcp_instance into json file
+      copy:
+        content: "{{ gcp_instance }}"
+        dest: "./destroy-gcp-instance-output.json"
+      when: true
+    # - name: remove destroyed machine from inventory file
+    #   include_tasks: ./tasks/remove_desployed_machine_from_inventory.yaml
+    #   vars:
+    #     json_file: "./destroy-gcp-instance-output.json"
+    #     inventory_file: "../inventory.ini"

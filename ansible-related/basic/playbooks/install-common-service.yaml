@@ -1,0 +1,13 @@
+---
+- name: Install common service 
+  hosts: workers,localhost
+  become: true 
+  tasks: 
+    # apt update & apt upgrade 
+    - name: Update Apt cache 
+      apt: 
+        update_cache: yes 
+    - name: Install neofetch 
+      apt: 
+        name: neofetch 
+        state: present  

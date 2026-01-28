@@ -1,0 +1,18 @@
+---
+# remove_desployed_machine_from_inventory.yaml
+# Task file to remove a destroyed GCP host from inventory.ini
+
+- name: Read destroyed instance JSON
+  ansible.builtin.slurp:
+    src: "{{ json_file }}"
+  register: json_content
+
+- name: Convert JSON string to dict
+  ansible.builtin.set_fact:
+    gcp_data: "{{ json_content.content | b64decode | from_json }}"
+
+- name: Remove destroyed GCP host from inventory.ini
+  ansible.builtin.lineinfile:
+    path: "{{ inventory_file }}"
+    regexp: "^{{ gcp_data.name }}\\s"
+    state: absent

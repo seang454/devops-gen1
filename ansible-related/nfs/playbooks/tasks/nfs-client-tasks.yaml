@@ -1,0 +1,42 @@
+- name: Wait for apt lock to be released
+  shell: |
+    while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+      sleep 5
+    done
+  become: true
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+- name: Install nfs client 
+  apt: 
+    name: nfs-common # nfs-common is the package for nfs client to do mounting 
+    state: present 
+# create dir each client to mount nfs server shared dir
+- name: Create local mount point 
+  file: 
+    path: "{{nfs_client.mount_path }}"
+    state: directory 
+    owner: nobody 
+    group: nogroup 
+    mode: "0777"
+# we mount from nfs server to all clients
+- name: Mount to NFS server 
+  mount: 
+    src: "{{nfs_server.ip}}:{{nfs_server.mount_path}}"
+    path: "{{nfs_client.mount_path}}"
+    fstype: nfs 
+    opts: defaults,_netdev
+    state: mounted
+# creat Persist cuz we do not want to lose mount after rebootion      
+- name: Persist after restart  
+  mount: 
+    src: "{{nfs_server.ip}}:{{nfs_server.mount_path}}"
+    path: "{{nfs_client.mount_path}}"
+    fstype: nfs 
+    opts: defaults,_netdev
+    state: present  
+
+ 

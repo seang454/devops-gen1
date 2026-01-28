@@ -1,0 +1,8 @@
+create: 
+    ansible-playbook -i inventory.ini \
+        playbooks/create-gcp-instance.yaml --ask-become-pass
+
+
+destroy: 
+    ansible-playbook -i inventory.ini \
+        playbooks/destroy-gcp-instance.yaml --ask-become-pass 

@@ -1,0 +1,45 @@
+- name: Wait for apt lock to be released
+  shell: |
+    while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+      sleep 5
+    done
+  become: true
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+
+- name: Install NFS Server 
+  apt: 
+    name: nfs-kernel-server # nfs-kernel-server is the package for nfs server to provide nfs services and sharing mount to clients
+    state: present
+# create shared dir on nfs server to be mounted by clients
+- name: Create Shared Directory 
+  file: 
+    path: "{{ nfs_server.mount_path}}"
+    state: directory 
+    group: "nogroup"
+    owner: "nobody"
+    mode: "0777"
+# Configure firewall to allow NFS traffic cuz by default it is blocked so clients cant access nfs server so we need to allow it
+- name: Configure the NFS Server exports 
+  blockinfile: 
+    path: /etc/exports
+    block: |
+      {{ nfs_server.mount_path }} {{ export_entries }}
+    create: yes 
+    state: present 
+  vars: 
+    export_entries: >-
+      {{ nfs_client.ips | map('regex_replace', '^(.*)$', '\g<1>(rw,sync,no_subtree_check,no_root_squash)') | join(' ') }}
+
+# Export the shared directory to clients
+- name: Applying the configuration 
+  command: exportfs -ra 
+- name: Restart the nfs server 
+  systemd: 
+    name: nfs-kernel-server
+    state: restarted 
+    enabled: true 
