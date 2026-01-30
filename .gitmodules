@@ -1,0 +1,3 @@
+[submodule "ansible-related/nfs-role-demo/roles/nfs"]
+	path = ansible-related/nfs-role-demo/roles/nfs
+	url = https://github.com/seang454/ansible-nfs-role-itp.git
