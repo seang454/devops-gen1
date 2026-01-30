@@ -1,1 +1,1 @@
-nfs_mode: client 
+nfs_mode: client # Set to "client" for NFS clients where this file is used to define variables and "server" for NFS server

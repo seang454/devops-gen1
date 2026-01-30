@@ -5,6 +5,6 @@
   #become_user: kk 
   roles: 
     - common
-    - nfs  
+    - ansible-nfs-role-itp  
 
 
