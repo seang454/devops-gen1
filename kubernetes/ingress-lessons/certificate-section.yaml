@@ -1,0 +1,16 @@
+# This file defines a Certificate resource for cert-manager to issue TLS certificates.
+# Certificate: requests cert for your domain
+# this standalone certificate resource can be used if you don't want to use ingress resource to request certs
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nginx-cert # name of the certificate resource
+  # annotations: # it do not rely on ingress annotations
+  #   kubernetes.io/ingress.class: "nginx"
+spec:
+  dnsNames:
+    - "nginx.seang.shop"
+  secretName: nginx-tls # name of the secret to store the issued certificate
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

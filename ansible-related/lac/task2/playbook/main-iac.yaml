@@ -1,5 +1,5 @@
 - name: running create workers and master instances task
-  hosts: node1
+  hosts: localhost
   become: true
   vars_files:
     - ../vars/machine.yaml

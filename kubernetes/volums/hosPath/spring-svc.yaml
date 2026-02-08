@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-file-upload-svc
+spec:
+  type: NodePort
+  selector:
+    app: spring-file-upload-app
+  ports:
+    - port: 8080          # Service port
+      targetPort: 8080    # Container port
+      nodePort: 30004     # NodePort in allowed range

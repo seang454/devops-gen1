@@ -12,9 +12,9 @@
     machine_type: "{{ item.machine_type }}"
     zone: "{{ item.zone }}"
     project: "{{google_project_id}}"
-    # auth_kind: application # is used for ADC
-    auth_kind: "serviceaccount"
-    service_account_file: "{{ service_account_path_server }}serviceaccount.json"
+    auth_kind: application # is used for ADC
+    # auth_kind: "serviceaccount"
+    # service_account_file: "{{ service_account_path_server }}serviceaccount.json"
     state: absent # absent -> delete instance 
     disks:
       - auto_delete: true
@@ -39,9 +39,9 @@
   when: true # project to delete only master instances
     # - item.name == "master02"
     # - item.name == "master03"
-  # environment:  # for ADC
-  #   GOOGLE_APPLICATION_CREDENTIALS: "{{ adc_file }}"
-  #   GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES: "1"
+  environment:  # for ADC
+    GOOGLE_APPLICATION_CREDENTIALS: "{{ adc_file }}"
+    GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES: "1"
 
 # Error in getting the first values  results
 - name: Debug GCP delete results

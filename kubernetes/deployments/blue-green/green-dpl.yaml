@@ -1,0 +1,26 @@
+# nginx 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-green-app # the name must be unique
+  labels: 
+    app: myapp         # we use the same app label to identify our app and make it easier for the service to select pods
+    replicas: green    # we use a different label to distinguish between blue and green deployments
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: myapp
+      replicas: green # the selector must match the labels in the pod template
+  template:
+    metadata:
+      labels:
+        app: myapp
+        replicas: green 
+    spec:
+      containers:
+      - name: nginx-cont 
+        image: nginx:latest 
+
+        ports:
+        - containerPort: 80

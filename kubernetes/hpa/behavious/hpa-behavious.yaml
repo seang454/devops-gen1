@@ -1,0 +1,49 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: test-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-hpa-dpl # the name must be unique
+ # or react-dpl, your choice
+  # Never go below 1 pod
+  # Never exceed 10 pods
+  minReplicas: 1  # lest to scale dow to 1 pod even dpl have 3 pods it will scal down to 1 pod 
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        # f average CPU usage > 1% of request, scale up
+        averageUtilization: 20  # Scale when CPU > 1%
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 50  # Scale when Memory > 1%
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 60  # Wait 5min before scaling down
+      policies:
+      - type: Percent
+        value: 100      # Can remove 100% of pods and scale-down stops at minReplicas 100% of 10 Replicas = remove all utill min replica = 1
+        periodSeconds: 15
+        # Can double pod count every 15 seconds
+    scaleUp:
+       #No waiting
+       #Scale immediately
+      stabilizationWindowSeconds: 0    # Scale up immediately
+      policies:
+      - type: Percent
+        value: 100      # Can double pods (100% increase)
+        periodSeconds: 15
+      - type: Pods
+        value: 4        # Or add 4 pods at once
+        periodSeconds: 15
+      selectPolicy: Max # Use whichever policy allows faster scaling

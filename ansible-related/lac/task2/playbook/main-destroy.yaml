@@ -1,5 +1,5 @@
 - name: delete machine gcp_instances
-  hosts: node1
+  hosts: localhost
   become: true
   vars_files:
     - ../vars/machine.yaml

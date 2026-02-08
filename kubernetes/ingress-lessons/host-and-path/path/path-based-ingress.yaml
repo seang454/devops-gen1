@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: path-based-ingress
+  labels:
+    app.kubernetes.io/name: path-based-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /  # this path is used to tell the taget redirect to path , without this it will not found
+    kubernetes.io/ingressClassName: "nginx"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - path.based.seang.shop
+      secretName: path-tls
+  rules:
+  - host: path.based.seang.shop
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/nginx"
+        backend:
+          service:
+            name: nginx-svc
+            port: 
+              number: 80
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: react-svc
+            port: 
+              number: 80

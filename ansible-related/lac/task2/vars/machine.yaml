@@ -1,8 +1,8 @@
 # contains all configuration related to the machines that we might use for the whole infrastructure setup 
-service_account_path_server: "/home/window/credentials/"
-service_account_path_local: "/home/seang/devops-itp-gen1/ansible-related/lac/task2/credentials/serviceaccount.json"
-# adc_file: "/home/kk/Documents/devops_related/devops_itp_gen01/4.ansible-related/IaC/task2/credentials/application_default_credentials.json"
-google_project_id: "temporal-bebop-483101-j1"
+# service_account_path_server: "/home/window/credentials/"
+# service_account_path_local: "/home/seang/devops-itp-gen1/ansible-related/lac/task2/credentials/serviceaccount.json"
+adc_file: "/home/window/.config/gcloud/application_default_credentials.json"
+google_project_id: "project-8924f831-f818-4bbd-9f9"
 ssh_pubkey_path: "/home/window/.ssh/id_rsa.pub"
 agent_user: "window"
 
@@ -52,11 +52,5 @@ machines_info:
     machine_type: "{{ machine_specs.medium.machine_type }}"
     #zone: "{{ machine_specs.medium.zone }}"
     zone: "asia-east2-a" # Hongkong instance
-    disk_size: "{{ machine_specs.medium.disk_size }}"
-    disk_type: "{{ machine_specs.medium.disk_type }}"
-  - name: "master-itp-3"
-    machine_type: "{{ machine_specs.medium.machine_type }}"
-    image: "{{ ubuntu_specs.v22.image }}"
-    zone: "asia-east2-a"
     disk_size: "{{ machine_specs.medium.disk_size }}"
     disk_type: "{{ machine_specs.medium.disk_type }}"

@@ -20,9 +20,9 @@
     machine_type: "{{ item.machine_type }}"
     zone: "{{ item.zone }}"
     project: "{{google_project_id}}"
-    auth_kind: "serviceaccount"
-    service_account_file: "{{service_account_path_server}}serviceaccount.json"
-    # auth_kind: application
+    # auth_kind: "serviceaccount"
+    # service_account_file: "{{service_account_path_server}}serviceaccount.json"
+    auth_kind: application
     state: present 
     metadata:
       ssh-keys: "{{agent_user}}:{{ ssh_pubkey['content'] | b64decode }}"
@@ -46,9 +46,9 @@
         - https-server
   loop: "{{ machines_info }}"
   register: gcp_workers_instances
-  # environment: 
-  #   GOOGLE_APPLICATION_CREDENTIALS: "{{ adc_file }}"
-  #   GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES: "1"
+  environment: 
+    GOOGLE_APPLICATION_CREDENTIALS: "{{ adc_file }}"
+    GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES: "1"
 
   # when: false
   vars:

@@ -1,0 +1,27 @@
+#filename: nginx-dpl.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactjs-dpl 
+spec:
+  replicas: 4
+  strategy: 
+    # type: Recreate 
+    type: RollingUpdate
+    # RollingUpdate:
+    #   maxUnavailable: 1
+    #   maxSurge: 1
+  selector:
+    matchLabels:
+      app: reactjs-app 
+  template:
+    metadata:
+      labels:
+        app: reactjs-app 
+    spec:
+      containers:
+      - name: reactjs-container
+        image: seang454/reactjs-fullstack:17a1a3e1
+        #image: 69966/earthdx:78 #v2
+        ports:
+        - containerPort: 80

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-file-upload-dpl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-file-upload-app
+  template:
+    metadata:
+      labels:
+        app: spring-file-upload-app
+    spec:
+      nodeSelector:
+          kubernetes.io/hostname: master-seang
+      # if we use do some on the taint nod
+      # we use This Pod is allowed to run on nodes that are normally blocked by this taint. 
+      tolerations: 
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+      containers:
+      - name: spring-file-upload-container
+        image: 69966/springgradleimg:1.1.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: spring-vol
+          mountPath: /app/src/main/resources/images
+      volumes:
+      - name: spring-vol
+        hostPath:
+          path: /var/spring-images

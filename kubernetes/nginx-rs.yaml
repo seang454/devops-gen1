@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-nginx-rs # it is name of ReplicaSet
+  labels:
+    app: my-nginx-app
+spec:
+  replicas: 4 # our desired number is 4 pods 
+  selector:
+    matchLabels:
+      app: my-nginx-app # should match the label in template below and metadata labels at top
+  template:
+    metadata:
+      labels:
+        app: my-nginx-app
+    spec:
+      containers:
+        - name: nginx-container 
+          image: nginx:alpine 
+          ports: 
+            - containerPort: 80

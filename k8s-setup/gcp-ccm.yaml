@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-controller-manager
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloud-controller-manager
+  template:
+    metadata:
+      labels:
+        app: cloud-controller-manager
+    spec:
+      serviceAccountName: cloud-controller-manager
+      containers:
+      - name: cloud-controller-manager
+        # Using official Kubernetes cloud-provider-gcp image from Docker Hub
+        # This is publicly available and doesn't require GCR access
+        image: k8scccm/cloud-controller-manager:v1.28.0
+        imagePullPolicy: IfNotPresent
+        command:
+          - cloud-controller-manager
+          - --cloud-provider=gce
+          - --allocate-node-cidrs=true
+          - --cluster-cidr=10.233.64.0/18
+          - --use-service-account-credentials=true
+          - --leader-elect=false
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /etc/gcp/cloud-sa.json
+        volumeMounts:
+          - name: gcp-sa
+            mountPath: /etc/gcp
+            readOnly: true
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+      volumes:
+        - name: gcp-sa
+          secret:
+            secretName: k8s-ccm-key
