@@ -6,4 +6,4 @@
   tasks:
     - import_tasks: ./tasks/delegate-file.yaml
     - import_tasks: ./tasks/create-masters-task.yaml
-    - import_tasks: ./tasks/create-workers-task.yaml
+    # - import_tasks: ./tasks/create-workers-task.yaml
