@@ -16,7 +16,7 @@ machine_specs:
     disk_type: "pd-standard" # we have hdd(pd-standard) , ssd( pd-ssd)
   medium:
     machine_type: "e2-medium"
-    zone: "asia-northeast3-b"
+    zone: "asia-northeast3-a"
     disk_size: 50
     disk_type: "pd-standard"
 
@@ -54,3 +54,11 @@ machines_info:
     zone: "asia-east2-a" # Hongkong instance
     disk_size: "{{ machine_specs.medium.disk_size }}"
     disk_type: "{{ machine_specs.medium.disk_type }}"
+  - name: "worker-itp-1"
+    image: "{{ ubuntu_specs.v22.image }}"
+    machine_type: "{{ machine_specs.medium.machine_type }}"
+    #zone: "{{ machine_specs.medium.zone }}"
+    zone: "asia-east2-a" # Hongkong instance
+    disk_size: "{{ machine_specs.medium.disk_size }}"
+    disk_type: "{{ machine_specs.medium.disk_type }}"
+

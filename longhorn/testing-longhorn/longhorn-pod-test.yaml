@@ -11,9 +11,9 @@ spec:
           - key: kubernetes.io/hostname
             operator: In
             values:
-            - worker-itp-1
-            - worker-itp-2  # Can specify multiple nodes
-            - master-itp-1
+            # - worker-itp-1
+            - worker-itp-2  
+            # Can specify multiple nodes
           # Can add more match expressions
           # - key: disktype # add if you have disktype lik ssd
           #   operator: In
