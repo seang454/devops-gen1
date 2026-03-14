@@ -1,21 +1,21 @@
-- name: Update apt cache (debug)
+- name: Update apt cache
   apt:
     update_cache: yes
-  register: apt_result
-- debug:
-    var: apt_result
 
-# install pip to be able to use pip module to install python packages like google-auth and requests
-- name: Install pip 
-  apt: 
-    name: python3-pip 
+- name: Install pip and venv
+  apt:
+    name:
+      - python3-pip
+      - python3-venv
     state: present
-# Step 0: Install required python packages via pip to handle GCP authentication
-- name: Use pip to install request and google-auth 
-  pip: 
-    name: 
-      - requests 
+
+- name: Create venv and install google-auth and requests
+  pip:
+    name:
+      - requests
       - google-auth
+    virtualenv: /opt/gcp-venv
+    virtualenv_command: python3 -m venv
 # # Step 1: Ensure remote directory exists
 # - name: Ensure remote credentials directory exists
 #   file:

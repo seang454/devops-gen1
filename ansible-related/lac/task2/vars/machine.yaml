@@ -2,7 +2,7 @@
 # service_account_path_server: "/home/window/credentials/"
 # service_account_path_local: "/home/seang/devops-itp-gen1/ansible-related/lac/task2/credentials/serviceaccount.json"
 adc_file: "/home/window/.config/gcloud/application_default_credentials.json"
-google_project_id: "project-8924f831-f818-4bbd-9f9"
+google_project_id: "project-9445469d-6690-4a81-aef"
 ssh_pubkey_path: "/home/window/.ssh/id_rsa.pub"
 agent_user: "window"
 
@@ -10,27 +10,32 @@ agent_user: "window"
 machine_specs:
   master01:
     machine_type: "e2-standard-2"
-    zone: "asia-northeast1-a"
+    zone: "asia-east1-a"
     disk_size: 50
     disk_type: "pd-standard"
   master02:
     machine_type: "e2-standard-2"   # was e2-worker01
-    zone: "asia-south1-a"
+    zone: "asia-east1-b"
     disk_size: 50
     disk_type: "pd-standard"
   worker01:
     machine_type: "e2-standard-2"   # was e2-worker01
-    zone: "asia-northeast3-b"
+    zone: "asia-northeast3-a"
     disk_size: 50
     disk_type: "pd-standard"
   worker02:
     machine_type: "e2-standard-2"   # was e2-worker01
-    zone: "australia-southeast2-b"
+    zone: "asia-northeast2-a"
     disk_size: 50
     disk_type: "pd-standard"
   worker03:
     machine_type: "e2-standard-2"   # was e2-worker01
-    zone: "australia-southeast2-b"
+    zone: "asia-east1-a"
+    disk_size: 50
+    disk_type: "pd-standard"
+  worker04:
+    machine_type: "e2-standard-2"
+    zone: "asia-east1-a"
     disk_size: 50
     disk_type: "pd-standard"
 
@@ -43,13 +48,13 @@ ubuntu_specs:
 # Define machines that we will create
 machines_info:
   # master requirement : RAM 8G, ....
-  - name: "master01"
+  - name: "master02"
     machine_type: "{{ machine_specs.master01.machine_type }}"
     image: "{{ ubuntu_specs.v22.image }}"
     zone: "{{ machine_specs.master01.zone }}"
     disk_size: "{{ machine_specs.master01.disk_size }}"
     disk_type: "{{ machine_specs.master01.disk_type }}"
-  - name: "master02"
+  - name: "master03"
     machine_type: "{{ machine_specs.master02.machine_type }}"
     image: "{{ ubuntu_specs.v22.image }}"
     zone: "{{ machine_specs.master02.zone }}"
@@ -73,4 +78,10 @@ machines_info:
     zone: "{{ machine_specs.worker03.zone }}"
     disk_size: "{{ machine_specs.worker03.disk_size }}"
     disk_type: "{{ machine_specs.worker03.disk_type }}"
+  - name: "worker04"
+    image: "{{ ubuntu_specs.v22.image }}"
+    machine_type: "{{ machine_specs.worker04.machine_type }}"
+    zone: "{{ machine_specs.worker04.zone }}"
+    disk_size: "{{ machine_specs.worker04.disk_size }}"
+    disk_type: "{{ machine_specs.worker04.disk_type }}"
 

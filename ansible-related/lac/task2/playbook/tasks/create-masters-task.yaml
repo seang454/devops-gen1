@@ -34,6 +34,8 @@
   environment:
     GOOGLE_APPLICATION_CREDENTIALS: "{{ adc_file }}"
     GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES: "1"
+  vars:
+    ansible_python_interpreter: /opt/gcp-venv/bin/python3
 
 - name: Create GCP instance
   google.cloud.gcp_compute_instance:
@@ -69,7 +71,8 @@
   environment:
     GOOGLE_APPLICATION_CREDENTIALS: "{{ adc_file }}"
     GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES: "1"
-
+  vars:
+    ansible_python_interpreter: /opt/gcp-venv/bin/python3
 - name: Write gcp_instances into json file
   copy:
     content: "{{ gcp_instances }}"
