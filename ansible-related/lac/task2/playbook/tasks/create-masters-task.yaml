@@ -86,3 +86,5 @@
     dest: ../inventory.ini
   run_once: true
   when: true
+- name: Refresh inventory to pick up new hosts
+  meta: refresh_inventory
